@@ -1,4 +1,4 @@
-if true then return {} end -- REMOVE THIS LINE TO ACTIVATE THIS FILE
+-- if true then return {} end -- REMOVE THIS LINE TO ACTIVATE THIS FILE
 
 -- AstroLSP allows you to customize the features in AstroNvim's LSP configuration engine
 ---@type LazySpec
@@ -74,6 +74,8 @@ return {
         --   desc = "Toggle LSP semantic highlight (buffer)",
         --   cond = function(client) return client.server_capabilities.semanticTokensProvider and vim.lsp.semantic_tokens end,
         -- },
+        ["<Leader>lf"] = { "<Cmd>FormatModifications<CR>", desc = "Format modifications in buffer" },
+        ["<Leader>lF"] = { "<Cmd>Format<CR>", desc = "Format all in buffer" },
       },
     },
   },

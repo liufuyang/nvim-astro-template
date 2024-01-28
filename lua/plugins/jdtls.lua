@@ -176,6 +176,37 @@ return {
         on_attach = function(client, bufnr)
           require("jdtls").setup_dap { hotcodereplace = "auto" }
           require("astrolsp").on_attach(client, bufnr)
+
+          -- format modification only instead of whole file setup
+          -- this setup the format modification on save
+          -- https://github.com/joechrisellis/lsp-format-modifications.nvim
+          local augroup_id = vim.api.nvim_create_augroup(
+            "FormatModificationsDocumentFormattingGroup",
+            { clear = false }
+          )
+          vim.api.nvim_clear_autocmds({ group = augroup_id, buffer = bufnr })
+          vim.api.nvim_create_autocmd(
+            { "BufWritePre" },
+            {
+              group = augroup_id,
+              buffer = bufnr,
+              callback = function()
+                local lsp_format_modifications = require"lsp-format-modifications"
+                lsp_format_modifications.format_modifications(client, bufnr)
+              end,
+            }
+          )
+          -- one can also turn off the on save trigger above and use this user command instead
+          vim.api.nvim_buf_create_user_command(
+            bufnr,
+            "FormatModifications",
+            function()
+              local lsp_format_modifications = require"lsp-format-modifications"
+              lsp_format_modifications.format_modifications(client, bufnr)
+            end,
+            {}
+          )
+          -- end of format modifcation on save setup
         end,
       }, opts)
     end,
