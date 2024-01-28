@@ -1,4 +1,4 @@
-if true then return {} end -- REMOVE THIS LINE TO ACTIVATE THIS FILE
+-- if true then return {} end -- REMOVE THIS LINE TO ACTIVATE THIS FILE
 
 -- AstroCore provides a central place to modify mappings set up as well as which-key menu titles
 ---@type LazySpec
@@ -34,7 +34,28 @@ return {
         -- this is useful for naming menus
         ["<Leader>b"] = { desc = "Buffers" },
         -- quick save
-        -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
+        ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
+        ["<Leader>s"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
+        ["<Leader>w"] = {
+          function()
+            vim.cmd("write!")
+            require("astrocore.buffer").close()
+          end,
+          desc = "Save and Close Buffer" 
+        },
+        ["<Leader><space>"] = {
+          function() require("telescope.builtin").find_files() end,
+          desc = "Find files"
+        },
+        ["<Leader>F"] = {
+          function() require("telescope.builtin").live_grep() end,
+          desc = "Find words"
+        },
+        ["<Leader>1"] = { "<Cmd>Neotree toggle<CR>", desc = "Toggle Explorer" },
+        -- Hide some short keys
+        ["<Leader>C"] = false,
+        ["<Leader>e"] = false, -- used to be Toggle Explorer
+
       },
       t = {
         -- setting a mapping to false will disable it
