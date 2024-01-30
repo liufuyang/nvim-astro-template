@@ -21,8 +21,10 @@ lazy.setup({
   -- AstroCommunity: import any community modules here
   -- TODO: Remove branch v4 on release
   { "AstroNvim/astrocommunity", branch = "v4" },
+  { import = "astrocommunity.pack.markdown" },
   { import = "astrocommunity.motion.nvim-spider" },
   { import = "astrocommunity.motion.nvim-surround" },
+  { import = "astrocommunity.editing-support.ultimate-autopair-nvim" },
   -- import = "astrocommunity.colorscheme.nordic-nvim" }, 
   -- { import = "astrocommunity.pack.lua" },
   -- import/override with your plugins

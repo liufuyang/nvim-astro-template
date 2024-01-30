@@ -98,7 +98,7 @@ return {
     opts = function(_, opts)
       local utils = require "astrocore"
       -- use this function notation to build some variables
-      local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".project" }
+      local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", "build.gradle.kts", ".project" }
       local root_dir = require("jdtls.setup").find_root(root_markers)
       -- calculate workspace dir
       local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
@@ -118,10 +118,14 @@ return {
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
           "-Dlog.protocol=true",
           "-Dlog.level=ALL",
+          "-Djava.import.gradle.enabled=false",
+          "-DmaxCompiledUnitsAtOnce=10000",
           "-Djava.import.generatesMetadataFilesAtProjectRoot=false", -- https://github.com/redhat-developer/vscode-java/blob/master/document/_java.metadataFilesGeneration.md
           "-javaagent:" .. vim.fn.expand "$MASON/share/jdtls/lombok.jar",
           "-Xms1g",
-          "-Xms8g",
+          "-Xmx8g",
+          "-XX:+UseG1GC",
+          "-XX:+UseStringDeduplication",
           "--add-modules=ALL-SYSTEM",
           "--add-opens",
           "java.base/java.util=ALL-UNNAMED",
@@ -225,14 +229,14 @@ return {
       -- create autocmd to load main class configs on LspAttach.
       -- This ensures that the LSP is fully attached.
       -- See https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
-      vim.api.nvim_create_autocmd("LspAttach", {
-        pattern = "*.java",
-        callback = function(args)
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          -- ensure that only the jdtls client is activated
-          if client.name == "jdtls" then require("jdtls.dap").setup_dap_main_class_configs() end
-        end,
-      })
+      -- vim.api.nvim_create_autocmd("LspAttach", {
+      --   pattern = "*.java",
+      --   callback = function(args)
+      --     local client = vim.lsp.get_client_by_id(args.data.client_id)
+      --     -- ensure that only the jdtls client is activated
+      --     if client.name == "jdtls" then require("jdtls.dap").setup_dap_main_class_configs() end
+      --   end,
+      -- })
     end,
   },
 }
