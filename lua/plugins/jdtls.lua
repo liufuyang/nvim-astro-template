@@ -116,11 +116,12 @@ return {
           "-Declipse.application=org.eclipse.jdt.ls.core.id1",
           "-Dosgi.bundles.defaultStartLevel=4",
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
+          -- Not, this seems need to be set before -Djava.import.gradle.enabled or some other parameters to take effects!
+          "-Djava.import.generatesMetadataFilesAtProjectRoot=false", -- https://github.com/redhat-developer/vscode-java/blob/master/document/_java.metadataFilesGeneration.md
           "-Dlog.protocol=true",
           "-Dlog.level=ALL",
-          "-Djava.import.gradle.enabled=false",
+          "-Djava.import.gradle.enabled=true",
           "-DmaxCompiledUnitsAtOnce=10000",
-          "-Djava.import.generatesMetadataFilesAtProjectRoot=false", -- https://github.com/redhat-developer/vscode-java/blob/master/document/_java.metadataFilesGeneration.md
           "-javaagent:" .. vim.fn.expand "$MASON/share/jdtls/lombok.jar",
           "-Xms1g",
           "-Xmx8g",
@@ -229,14 +230,14 @@ return {
       -- create autocmd to load main class configs on LspAttach.
       -- This ensures that the LSP is fully attached.
       -- See https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
-      -- vim.api.nvim_create_autocmd("LspAttach", {
-      --   pattern = "*.java",
-      --   callback = function(args)
-      --     local client = vim.lsp.get_client_by_id(args.data.client_id)
-      --     -- ensure that only the jdtls client is activated
-      --     if client.name == "jdtls" then require("jdtls.dap").setup_dap_main_class_configs() end
-      --   end,
-      -- })
+      vim.api.nvim_create_autocmd("LspAttach", {
+        pattern = "*.java",
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          -- ensure that only the jdtls client is activated
+          if client.name == "jdtls" then require("jdtls.dap").setup_dap_main_class_configs() end
+        end,
+      })
     end,
   },
 }
